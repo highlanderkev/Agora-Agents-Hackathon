@@ -32,6 +32,9 @@ jobs:
       - name: Install UI dependencies
         run: npm --prefix apps/ui ci
 
+      - name: Run type checks
+        run: npm run typecheck
+
       - name: Run tests
         run: npm test
 

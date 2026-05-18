@@ -9,4 +9,12 @@ npm install
 npm run dev
 ```
 
-The app currently points CopilotKit to `/api/copilotkit` as a placeholder runtime URL.
+## TypeScript checks
+
+```bash
+npm run typecheck
+npm run lint
+npm run build
+```
+
+The app points CopilotKit to `/api/copilotkit` in this workspace.

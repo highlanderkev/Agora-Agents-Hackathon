@@ -4,13 +4,27 @@ import {
   isServerWalletAccessAllowed,
 } from '@/lib/serverWalletAccess';
 
-export async function POST(request) {
+async function readJsonBody(request: Request): Promise<Record<string, unknown>> {
+  try {
+    const value: unknown = await request.json();
+
+    if (value && typeof value === 'object' && !Array.isArray(value)) {
+      return value as Record<string, unknown>;
+    }
+
+    return {};
+  } catch {
+    return {};
+  }
+}
+
+export async function POST(request: Request): Promise<Response> {
   if (!isServerWalletAccessAllowed(request)) {
     return createServerWalletAccessDeniedResponse();
   }
 
   try {
-    const body = await request.json().catch(() => ({}));
+    const body = await readJsonBody(request);
     const { swapRequest, result } = await executeArcSwap(body);
 
     return Response.json({
@@ -29,7 +43,7 @@ export async function POST(request) {
   }
 }
 
-export async function GET() {
+export async function GET(): Promise<Response> {
   return Response.json({
     ok: true,
     endpoint: '/api/arc/swap',

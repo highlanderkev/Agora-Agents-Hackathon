@@ -9,6 +9,7 @@ import {
   createServerWalletAccessDeniedResponse,
   isServerWalletAccessAllowed,
 } from '@/lib/serverWalletAccess';
+import type { SwapRequestInput } from '@/lib/arcSwapService';
 
 const runtime = new CopilotRuntime({
   actions: [
@@ -36,7 +37,7 @@ const runtime = new CopilotRuntime({
           required: false,
         },
       ],
-      handler: async (args) => {
+      handler: async (args: SwapRequestInput) => {
         const { swapRequest, result } = await executeArcSwap(args);
 
         return {
@@ -61,7 +62,7 @@ const { handleRequest } = copilotRuntimeNextJSAppRouterEndpoint({
   serviceAdapter,
 });
 
-export async function POST(request) {
+export async function POST(request: Request): Promise<Response> {
   if (!isServerWalletAccessAllowed(request)) {
     return createServerWalletAccessDeniedResponse();
   }
@@ -69,7 +70,7 @@ export async function POST(request) {
   return handleRequest(request);
 }
 
-export async function GET() {
+export async function GET(): Promise<Response> {
   return Response.json({
     ok: true,
     endpoint: '/api/copilotkit',

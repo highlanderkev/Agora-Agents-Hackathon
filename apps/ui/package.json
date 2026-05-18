@@ -7,7 +7,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint src --ext .js --max-warnings=0"
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src --ext .ts,.tsx --max-warnings=0"
   },
   "dependencies": {
     "@agora/arc-swap": "file:../../packages/arc-swap",
@@ -19,8 +20,14 @@
     "react-dom": "^19.2.0"
   },
   "devDependencies": {
+    "@types/node": "^22.18.11",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
+    "@typescript-eslint/eslint-plugin": "^8.46.2",
+    "@typescript-eslint/parser": "^8.46.2",
     "eslint": "^9.39.4",
     "eslint-config-next": "^16.2.6",
-    "eslint-plugin-react": "^7.37.5"
+    "eslint-plugin-react": "^7.37.5",
+    "typescript": "^5.9.3"
   }
 }

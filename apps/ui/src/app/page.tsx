@@ -1,20 +1,50 @@
 "use client";
 
 import { useEffect, useState } from 'react';
+import type { ChangeEvent, FormEvent } from 'react';
 import { CopilotSidebar } from '@copilotkit/react-core/v2';
 
+interface RuntimeHealth {
+  loading: boolean;
+  llmConfigured: boolean;
+  note: string;
+}
+
+interface SwapFormState {
+  tokenIn: string;
+  tokenOut: string;
+  amountIn: string;
+}
+
+interface SwapState {
+  loading: boolean;
+  message: string;
+  payload: unknown;
+}
+
+interface RuntimeHealthPayload {
+  ok?: boolean;
+  llmConfigured?: boolean;
+  note?: string;
+}
+
+interface SwapPayload {
+  ok?: boolean;
+  error?: string;
+}
+
 export default function Home() {
-  const [runtimeHealth, setRuntimeHealth] = useState({
+  const [runtimeHealth, setRuntimeHealth] = useState<RuntimeHealth>({
     loading: true,
     llmConfigured: false,
     note: 'Checking runtime configuration...',
   });
-  const [swapForm, setSwapForm] = useState({
+  const [swapForm, setSwapForm] = useState<SwapFormState>({
     tokenIn: 'USDC',
     tokenOut: 'EURC',
     amountIn: '0.01',
   });
-  const [swapState, setSwapState] = useState({
+  const [swapState, setSwapState] = useState<SwapState>({
     loading: false,
     message: 'No manual swap submitted yet.',
     payload: null,
@@ -26,7 +56,7 @@ export default function Home() {
     async function loadRuntimeHealth() {
       try {
         const response = await fetch('/api/copilotkit', { method: 'GET' });
-        const payload = await response.json();
+        const payload: RuntimeHealthPayload = await response.json();
 
         if (!isMounted) {
           return;
@@ -66,7 +96,7 @@ export default function Home() {
     };
   }, []);
 
-  async function handleTrySwap(event) {
+  async function handleTrySwap(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setSwapState({
       loading: true,
@@ -80,7 +110,7 @@ export default function Home() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(swapForm),
       });
-      const payload = await response.json();
+      const payload: SwapPayload = await response.json();
 
       if (!response.ok || !payload?.ok) {
         setSwapState({
@@ -135,7 +165,7 @@ export default function Home() {
             <input
               id="tokenIn"
               value={swapForm.tokenIn}
-              onChange={(event) => {
+              onChange={(event: ChangeEvent<HTMLInputElement>) => {
                 setSwapForm((current) => ({
                   ...current,
                   tokenIn: event.target.value,
@@ -148,7 +178,7 @@ export default function Home() {
             <input
               id="tokenOut"
               value={swapForm.tokenOut}
-              onChange={(event) => {
+              onChange={(event: ChangeEvent<HTMLInputElement>) => {
                 setSwapForm((current) => ({
                   ...current,
                   tokenOut: event.target.value,
@@ -161,7 +191,7 @@ export default function Home() {
             <input
               id="amountIn"
               value={swapForm.amountIn}
-              onChange={(event) => {
+              onChange={(event: ChangeEvent<HTMLInputElement>) => {
                 setSwapForm((current) => ({
                   ...current,
                   amountIn: event.target.value,
@@ -176,14 +206,7 @@ export default function Home() {
           <pre className="swapPayload">{JSON.stringify(swapState.payload, null, 2)}</pre>
         </form>
       </section>
-      <CopilotSidebar
-        defaultOpen
-        instructions="Help the user operate the Arc Testnet swap workflow and explain failures clearly. Use runArcSwap for execution requests."
-        labels={{
-          title: 'Arc Testnet Copilot',
-          initial: 'Ask me to inspect or run your Arc Testnet swap flow.',
-        }}
-      />
+      <CopilotSidebar defaultOpen />
     </main>
   );
 }

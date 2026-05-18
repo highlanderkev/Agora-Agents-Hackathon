@@ -1,6 +1,18 @@
 import { DEFAULT_SWAP_REQUEST, runArcTestnetSwap } from '@agora/arc-swap';
+import type { SwapRequest } from '@agora/arc-swap';
 
-export function coerceSwapRequest(input) {
+export interface SwapRequestInput {
+  tokenIn?: unknown;
+  tokenOut?: unknown;
+  amountIn?: unknown;
+}
+
+export interface ArcSwapExecution {
+  swapRequest: SwapRequest;
+  result: unknown;
+}
+
+export function coerceSwapRequest(input: SwapRequestInput | undefined): SwapRequest {
   const tokenIn =
     typeof input?.tokenIn === 'string' ? input.tokenIn.trim().toUpperCase() : DEFAULT_SWAP_REQUEST.tokenIn;
   const tokenOut =
@@ -14,7 +26,7 @@ export function coerceSwapRequest(input) {
   };
 }
 
-export async function executeArcSwap(input) {
+export async function executeArcSwap(input: SwapRequestInput | undefined): Promise<ArcSwapExecution> {
   const swapRequest = coerceSwapRequest(input);
   const result = await runArcTestnetSwap({ swapRequest });
 

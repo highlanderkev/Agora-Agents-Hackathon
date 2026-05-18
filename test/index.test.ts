@@ -2,17 +2,33 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
 import { relative } from 'node:path';
-import { isDirectExecution, runArcTestnetSwap } from '../src/index.js';
+import { isDirectExecution, runArcTestnetSwap } from '@agora/arc-swap';
+import type { ArcConfig, SwapRequest } from '@agora/arc-swap';
+
+interface SwapArgs {
+  tokenIn: string;
+  tokenOut: string;
+  amountIn: string;
+}
+
+function createConfig(privateKey: string): ArcConfig {
+  return {
+    chain: 'Arc_Testnet',
+    privateKey,
+    kitKey: 'kit-key',
+    explorerUrl: 'https://testnet.arcscan.app/',
+  };
+}
 
 test('isDirectExecution returns true for absolute script paths', () => {
-  const importMetaUrl = new URL('../src/index.js', import.meta.url).href;
+  const importMetaUrl = new URL('../../packages/arc-swap/dist/cli.js', import.meta.url).href;
   const absoluteScriptPath = fileURLToPath(importMetaUrl);
 
   assert.equal(isDirectExecution(importMetaUrl, absoluteScriptPath), true);
 });
 
 test('isDirectExecution returns true for relative script paths', () => {
-  const importMetaUrl = new URL('../src/index.js', import.meta.url).href;
+  const importMetaUrl = new URL('../../packages/arc-swap/dist/cli.js', import.meta.url).href;
   const absoluteScriptPath = fileURLToPath(importMetaUrl);
   const relativeScriptPath = relative(process.cwd(), absoluteScriptPath);
 
@@ -20,7 +36,7 @@ test('isDirectExecution returns true for relative script paths', () => {
 });
 
 test('isDirectExecution returns false when argv1 is missing or different', () => {
-  const importMetaUrl = new URL('../src/index.js', import.meta.url).href;
+  const importMetaUrl = new URL('../../packages/arc-swap/dist/cli.js', import.meta.url).href;
 
   assert.equal(isDirectExecution(importMetaUrl, undefined), false);
   assert.equal(isDirectExecution(importMetaUrl, '/tmp/not-index.js'), false);
@@ -31,12 +47,7 @@ test('runArcTestnetSwap rethrows non-balance errors unchanged', async () => {
 
   await assert.rejects(
     runArcTestnetSwap({
-      getConfig: () => ({
-        chain: 'Arc_Testnet',
-        privateKey: '0x1234',
-        kitKey: 'kit-key',
-        explorerUrl: 'https://testnet.arcscan.app/',
-      }),
+      getConfig: () => createConfig('0x1234'),
       appKitFactory: () => ({
         swap: async () => {
           throw nonBalanceError;
@@ -45,7 +56,7 @@ test('runArcTestnetSwap rethrows non-balance errors unchanged', async () => {
       createAdapter: () => ({}),
       toAccount: () => ({ address: '0xabc' }),
     }),
-    (error) => error === nonBalanceError,
+    (error: unknown) => error === nonBalanceError,
   );
 });
 
@@ -54,12 +65,7 @@ test('runArcTestnetSwap wraps insufficient balance errors with guidance', async 
 
   await assert.rejects(
     runArcTestnetSwap({
-      getConfig: () => ({
-        chain: 'Arc_Testnet',
-        privateKey: '0x1234',
-        kitKey: 'kit-key',
-        explorerUrl: 'https://testnet.arcscan.app/',
-      }),
+      getConfig: () => createConfig('0x1234'),
       appKitFactory: () => ({
         swap: async () => {
           throw balanceError;
@@ -68,7 +74,7 @@ test('runArcTestnetSwap wraps insufficient balance errors with guidance', async 
       createAdapter: () => ({}),
       toAccount: () => ({ address: '0xabc' }),
     }),
-    (error) => {
+    (error: unknown) => {
       assert.ok(error instanceof Error);
       assert.equal(error.cause, balanceError);
       assert.match(error.message, /Swap failed because the wallet does not have enough token balance/);
@@ -80,16 +86,11 @@ test('runArcTestnetSwap wraps insufficient balance errors with guidance', async 
 });
 
 test('runArcTestnetSwap normalizes private key without 0x prefix', async () => {
-  let adapterPrivateKey;
-  let accountPrivateKey;
+  let adapterPrivateKey: string | undefined;
+  let accountPrivateKey: string | undefined;
 
   const result = await runArcTestnetSwap({
-    getConfig: () => ({
-      chain: 'Arc_Testnet',
-      privateKey: 'abcd',
-      kitKey: 'kit-key',
-      explorerUrl: 'https://testnet.arcscan.app/',
-    }),
+    getConfig: () => createConfig('abcd'),
     appKitFactory: () => ({
       swap: async () => ({ requestId: 'req_123' }),
     }),
@@ -109,22 +110,18 @@ test('runArcTestnetSwap normalizes private key without 0x prefix', async () => {
 });
 
 test('runArcTestnetSwap forwards swapRequest overrides', async () => {
-  let capturedSwapArgs;
+  let capturedSwapArgs: SwapArgs | undefined;
+  const swapRequest: SwapRequest = {
+    tokenIn: 'USDT',
+    tokenOut: 'USDC',
+    amountIn: '2.50',
+  };
 
   await runArcTestnetSwap({
-    getConfig: () => ({
-      chain: 'Arc_Testnet',
-      privateKey: '0x1234',
-      kitKey: 'kit-key',
-      explorerUrl: 'https://testnet.arcscan.app/',
-    }),
-    swapRequest: {
-      tokenIn: 'USDT',
-      tokenOut: 'USDC',
-      amountIn: '2.50',
-    },
+    getConfig: () => createConfig('0x1234'),
+    swapRequest,
     appKitFactory: () => ({
-      swap: async (args) => {
+      swap: async (args: SwapArgs) => {
         capturedSwapArgs = args;
         return { requestId: 'req_override' };
       },
@@ -133,7 +130,7 @@ test('runArcTestnetSwap forwards swapRequest overrides', async () => {
     toAccount: () => ({ address: '0xabc' }),
   });
 
-  assert.equal(capturedSwapArgs.tokenIn, 'USDT');
-  assert.equal(capturedSwapArgs.tokenOut, 'USDC');
-  assert.equal(capturedSwapArgs.amountIn, '2.50');
+  assert.equal(capturedSwapArgs?.tokenIn, 'USDT');
+  assert.equal(capturedSwapArgs?.tokenOut, 'USDC');
+  assert.equal(capturedSwapArgs?.amountIn, '2.50');
 });
