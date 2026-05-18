@@ -4,6 +4,8 @@ Starter project space for the Agora agent hackathon using the Arc Agent SDK (App
 
 ## Quick start
 
+Requires Node.js 20.18.0 or newer.
+
 1. Install dependencies:
 
    ```bash
