@@ -1,4 +1,4 @@
-import { DEFAULT_SWAP_REQUEST, runArcTestnetSwap } from '../../../../src/arcSwapService.js';
+import { DEFAULT_SWAP_REQUEST, runArcTestnetSwap } from '@agora/arc-swap';
 
 export function coerceSwapRequest(input) {
   const tokenIn =

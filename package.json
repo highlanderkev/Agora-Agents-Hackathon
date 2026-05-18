@@ -19,6 +19,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@agora/arc-swap": "file:packages/arc-swap",
     "@circle-fin/adapter-viem-v2": "^1.11.0",
     "@circle-fin/app-kit": "^1.5.1",
     "dotenv": "^17.4.2",
