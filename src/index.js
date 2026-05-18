@@ -38,12 +38,17 @@ function formatBalanceGuidance({ walletAddress, explorerUrl }) {
   ].join('\n');
 }
 
-export async function runArcTestnetSwap() {
-  const { chain, privateKey, kitKey, explorerUrl } = getArcConfig();
+export async function runArcTestnetSwap({
+  getConfig = getArcConfig,
+  appKitFactory = () => new AppKit(),
+  createAdapter = createViemAdapterFromPrivateKey,
+  toAccount = privateKeyToAccount,
+} = {}) {
+  const { chain, privateKey, kitKey, explorerUrl } = getConfig();
   const normalizedPrivateKey = normalizePrivateKey(privateKey);
-  const walletAddress = privateKeyToAccount(normalizedPrivateKey).address;
-  const kit = new AppKit();
-  const adapter = createViemAdapterFromPrivateKey({ privateKey: normalizedPrivateKey });
+  const walletAddress = toAccount(normalizedPrivateKey).address;
+  const kit = appKitFactory();
+  const adapter = createAdapter({ privateKey: normalizedPrivateKey });
 
   try {
     return await kit.swap({
