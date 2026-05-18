@@ -4,6 +4,7 @@ export const ARC_TESTNET_CHAIN = 'Arc_Testnet';
 export const ARC_TESTNET_EXPLORER_URL = 'https://testnet.arcscan.app/';
 
 export interface ArcConfigEnv {
+  [key: string]: string | undefined;
   PRIVATE_KEY?: string;
   KIT_KEY?: string;
 }
