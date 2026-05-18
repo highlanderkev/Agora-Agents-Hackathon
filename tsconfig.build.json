@@ -8,8 +8,9 @@
     "outDir": "dist"
   },
   "include": [
-    "test/**/*.ts",
-    "packages/ui/src/lib/**/*.ts"
+    "packages/arc-swap/test/**/*.ts",
+    "packages/ui/src/lib/**/*.ts",
+    "packages/ui/test/**/*.ts"
   ],
   "exclude": [
     "packages/**"

@@ -33,7 +33,7 @@ Requires Node.js 20.18.0 or newer.
 ## TypeScript workflow
 
 - `npm run typecheck`: strict type checks for root and UI
-- `npm test`: compile-to-dist test flow (`build:ts` + `node --test` on `dist/test`)
+- `npm test`: package-scoped test flow (`npm run test:arc-swap` + `npm run test:ui`)
 - `npm run build:ts`: builds shared package and root/test TS outputs
 
 This starter uses:

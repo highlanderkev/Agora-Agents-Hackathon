@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
 import { relative } from 'node:path';
-import { isDirectExecution, runArcTestnetSwap } from '@agora/arc-swap';
-import type { ArcConfig, SwapRequest } from '@agora/arc-swap';
+import { isDirectExecution, runArcTestnetSwap } from '../src/index.js';
+import type { ArcConfig, SwapRequest } from '../src/index.js';
 
 interface SwapArgs {
   tokenIn: string;
@@ -21,14 +21,14 @@ function createConfig(privateKey: string): ArcConfig {
 }
 
 test('isDirectExecution returns true for absolute script paths', () => {
-  const importMetaUrl = new URL('../../packages/arc-swap/dist/cli.js', import.meta.url).href;
+  const importMetaUrl = new URL('../src/cli.js', import.meta.url).href;
   const absoluteScriptPath = fileURLToPath(importMetaUrl);
 
   assert.equal(isDirectExecution(importMetaUrl, absoluteScriptPath), true);
 });
 
 test('isDirectExecution returns true for relative script paths', () => {
-  const importMetaUrl = new URL('../../packages/arc-swap/dist/cli.js', import.meta.url).href;
+  const importMetaUrl = new URL('../src/cli.js', import.meta.url).href;
   const absoluteScriptPath = fileURLToPath(importMetaUrl);
   const relativeScriptPath = relative(process.cwd(), absoluteScriptPath);
 
@@ -36,7 +36,7 @@ test('isDirectExecution returns true for relative script paths', () => {
 });
 
 test('isDirectExecution returns false when argv1 is missing or different', () => {
-  const importMetaUrl = new URL('../../packages/arc-swap/dist/cli.js', import.meta.url).href;
+  const importMetaUrl = new URL('../src/cli.js', import.meta.url).href;
 
   assert.equal(isDirectExecution(importMetaUrl, undefined), false);
   assert.equal(isDirectExecution(importMetaUrl, '/tmp/not-index.js'), false);

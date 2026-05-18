@@ -20,8 +20,9 @@
     }
   },
   "include": [
-    "test/**/*.ts",
     "packages/arc-swap/src/**/*.ts",
-    "packages/ui/src/lib/**/*.ts"
+    "packages/arc-swap/test/**/*.ts",
+    "packages/ui/src/lib/**/*.ts",
+    "packages/ui/test/**/*.ts"
   ]
 }

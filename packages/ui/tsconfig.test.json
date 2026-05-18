@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "declaration": false,
+    "sourceMap": true,
+    "outDir": "dist-test",
+    "incremental": false
+  },
+  "include": ["src/lib/**/*.ts", "test/**/*.ts"],
+  "exclude": ["node_modules", ".next"]
+}
