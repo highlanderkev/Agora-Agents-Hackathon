@@ -1,0 +1,138 @@
+:root {
+  color-scheme: light;
+  font-family: 'IBM Plex Sans', 'Segoe UI', sans-serif;
+  --bg: #f6f7f9;
+  --panel: #ffffff;
+  --text: #17212b;
+  --muted: #475467;
+  --accent: #0f766e;
+  --border: #d0d5dd;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  background: radial-gradient(circle at top left, #d8f4ef 0%, var(--bg) 40%);
+  color: var(--text);
+}
+
+.page {
+  min-height: 100vh;
+  padding: 2.5rem 1.25rem;
+  display: grid;
+  place-items: start center;
+}
+
+.panel {
+  width: min(760px, 100%);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.5rem;
+  box-shadow: 0 18px 40px rgba(16, 24, 40, 0.08);
+}
+
+.panel h1 {
+  margin: 0 0 0.75rem;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  letter-spacing: -0.02em;
+}
+
+.panel p {
+  margin: 0.35rem 0;
+  line-height: 1.55;
+}
+
+.hint {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.runtimeHealth {
+  margin-top: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.75rem 0.9rem;
+  background: #f9fafb;
+}
+
+.runtimeHealth strong {
+  display: block;
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+.runtimeHealth p {
+  margin: 0.35rem 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.swapForm {
+  margin-top: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.9rem;
+  background: #fcfcfd;
+}
+
+.swapForm h2 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.fieldRow {
+  display: grid;
+  gap: 0.3rem;
+  margin-top: 0.65rem;
+}
+
+.fieldRow label {
+  font-size: 0.86rem;
+  color: var(--muted);
+}
+
+.fieldRow input {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.55rem 0.65rem;
+  font: inherit;
+}
+
+.swapForm button {
+  margin-top: 0.8rem;
+  border: 0;
+  border-radius: 8px;
+  background: var(--accent);
+  color: white;
+  padding: 0.55rem 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.swapForm button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.swapMessage {
+  margin-top: 0.65rem;
+  font-size: 0.9rem;
+}
+
+.swapPayload {
+  margin-top: 0.5rem;
+  min-height: 72px;
+  border-radius: 8px;
+  background: #122230;
+  color: #e9f7ff;
+  padding: 0.7rem;
+  font-size: 0.82rem;
+  overflow: auto;
+}

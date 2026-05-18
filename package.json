@@ -6,7 +6,11 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
-    "test": "node --test"
+    "test": "node --test",
+    "dev:ui": "npm --prefix apps/ui run dev",
+    "build:ui": "npm --prefix apps/ui run build",
+    "start:ui": "npm --prefix apps/ui run start",
+    "lint:ui": "npm --prefix apps/ui run lint"
   },
   "engines": {
     "node": ">=20.18.0"
@@ -15,6 +19,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@agora/arc-swap": "file:packages/arc-swap",
     "@circle-fin/adapter-viem-v2": "^1.11.0",
     "@circle-fin/app-kit": "^1.5.1",
     "dotenv": "^17.4.2",

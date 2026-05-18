@@ -17,6 +17,8 @@ coverage/
 # Build/dist directories
 dist/
 build/
+.next/
+apps/ui/.next/
 
 # IDE and editor files
 .vscode/*

@@ -107,3 +107,33 @@ test('runArcTestnetSwap normalizes private key without 0x prefix', async () => {
   assert.equal(accountPrivateKey, '0xabcd');
   assert.deepEqual(result, { requestId: 'req_123' });
 });
+
+test('runArcTestnetSwap forwards swapRequest overrides', async () => {
+  let capturedSwapArgs;
+
+  await runArcTestnetSwap({
+    getConfig: () => ({
+      chain: 'Arc_Testnet',
+      privateKey: '0x1234',
+      kitKey: 'kit-key',
+      explorerUrl: 'https://testnet.arcscan.app/',
+    }),
+    swapRequest: {
+      tokenIn: 'USDT',
+      tokenOut: 'USDC',
+      amountIn: '2.50',
+    },
+    appKitFactory: () => ({
+      swap: async (args) => {
+        capturedSwapArgs = args;
+        return { requestId: 'req_override' };
+      },
+    }),
+    createAdapter: () => ({ kind: 'adapter' }),
+    toAccount: () => ({ address: '0xabc' }),
+  });
+
+  assert.equal(capturedSwapArgs.tokenIn, 'USDT');
+  assert.equal(capturedSwapArgs.tokenOut, 'USDC');
+  assert.equal(capturedSwapArgs.amountIn, '2.50');
+});

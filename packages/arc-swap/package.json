@@ -1,0 +1,16 @@
+{
+  "name": "@agora/arc-swap",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js",
+    "./config": "./src/config.js"
+  },
+  "dependencies": {
+    "@circle-fin/adapter-viem-v2": "^1.11.0",
+    "@circle-fin/app-kit": "^1.5.1",
+    "dotenv": "^17.4.2",
+    "viem": "^2.49.3"
+  }
+}
