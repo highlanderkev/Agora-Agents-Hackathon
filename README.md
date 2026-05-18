@@ -63,6 +63,7 @@ The Next.js app now includes a local endpoint at `/api/arc/swap`.
 
 - `GET /api/arc/swap`: health/usage metadata
 - `POST /api/arc/swap`: executes `runArcTestnetSwap` from `src/arcSwapService.js`
+- Swap execution is intentionally limited to local development requests because it uses the server-side wallet configured by `PRIVATE_KEY`.
 
 Example request:
 
@@ -77,6 +78,7 @@ curl -X POST http://localhost:3000/api/arc/swap \
 The UI app includes `/api/copilotkit` for CopilotKit chat runtime traffic.
 
 - It registers backend action `runArcSwap` that uses `src/arcSwapService.js`.
+- Transaction-capable runtime requests are only enabled from local development because they use the server-side wallet configured by `PRIVATE_KEY`.
 - For LLM-driven chat responses and tool selection, set:
 
 ```bash

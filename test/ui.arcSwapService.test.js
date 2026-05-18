@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { coerceSwapRequest } from '../apps/ui/src/lib/arcSwapService.js';
+import { isServerWalletAccessAllowed } from '../apps/ui/src/lib/serverWalletAccess.js';
 
 test('coerceSwapRequest applies defaults when input is missing', () => {
   const result = coerceSwapRequest(undefined);
@@ -38,4 +39,22 @@ test('coerceSwapRequest falls back for non-string fields', () => {
     tokenOut: 'EURC',
     amountIn: '0.01',
   });
+});
+
+test('isServerWalletAccessAllowed allows localhost in development', () => {
+  const request = new Request('http://localhost:3000/api/arc/swap');
+
+  assert.equal(isServerWalletAccessAllowed(request, { NODE_ENV: 'development' }), true);
+});
+
+test('isServerWalletAccessAllowed blocks non-local hosts', () => {
+  const request = new Request('https://example.com/api/arc/swap');
+
+  assert.equal(isServerWalletAccessAllowed(request, { NODE_ENV: 'development' }), false);
+});
+
+test('isServerWalletAccessAllowed blocks non-development environments', () => {
+  const request = new Request('http://localhost:3000/api/copilotkit');
+
+  assert.equal(isServerWalletAccessAllowed(request, { NODE_ENV: 'production' }), false);
 });

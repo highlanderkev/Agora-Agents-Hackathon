@@ -5,6 +5,10 @@ import {
   copilotRuntimeNextJSAppRouterEndpoint,
 } from '@copilotkit/runtime';
 import { executeArcSwap } from '@/lib/arcSwapService';
+import {
+  createServerWalletAccessDeniedResponse,
+  isServerWalletAccessAllowed,
+} from '@/lib/serverWalletAccess';
 
 const runtime = new CopilotRuntime({
   actions: [
@@ -58,6 +62,10 @@ const { handleRequest } = copilotRuntimeNextJSAppRouterEndpoint({
 });
 
 export async function POST(request) {
+  if (!isServerWalletAccessAllowed(request)) {
+    return createServerWalletAccessDeniedResponse();
+  }
+
   return handleRequest(request);
 }
 
@@ -66,6 +74,7 @@ export async function GET() {
     ok: true,
     endpoint: '/api/copilotkit',
     llmConfigured: Boolean(process.env.OPENAI_API_KEY),
+    transactionActionsNote: 'Transaction-capable actions are only enabled from local development.',
     note: process.env.OPENAI_API_KEY
       ? 'Runtime is configured with OpenAIAdapter.'
       : 'Set OPENAI_API_KEY to enable LLM-driven chat responses and tool selection.',
