@@ -9,7 +9,7 @@
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src --ext .ts,.tsx --max-warnings=0",
-    "test": "tsc -p tsconfig.test.json && node --test dist-test/test/**/*.test.js"
+    "test": "tsc -p tsconfig.test.json && find dist-test/test -type f -name '*.test.js' -print0 | xargs -0 node --test"
   },
   "dependencies": {
     "@agora/arc-swap": "file:../arc-swap",
