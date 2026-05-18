@@ -1,0 +1,23 @@
+{
+  "name": "agora-agents-hackathon",
+  "version": "1.0.0",
+  "description": "Arc Agent SDK starter workspace for the Agora agent hackathon",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20.18.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@circle-fin/adapter-viem-v2": "^1.11.0",
+    "@circle-fin/app-kit": "^1.5.1",
+    "dotenv": "^17.4.2",
+    "viem": "^2.49.3"
+  }
+}
