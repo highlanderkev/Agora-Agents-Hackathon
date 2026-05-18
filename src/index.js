@@ -55,7 +55,7 @@ export async function runArcTestnetSwap({
       from: { adapter, chain },
       tokenIn: 'USDC',
       tokenOut: 'EURC',
-      amountIn: '1.00',
+      amountIn: '0.01',
       config: { kitKey },
     });
   } catch (error) {
