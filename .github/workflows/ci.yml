@@ -35,8 +35,11 @@ jobs:
       - name: Run type checks
         run: npm run typecheck
 
-      - name: Run tests
-        run: npm test
+      - name: Run Arc Swap tests
+        run: npm run test:arc-swap
+
+      - name: Run UI tests
+        run: npm run test:ui
 
       - name: Lint UI
         run: npm run lint:ui
