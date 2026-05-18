@@ -7,7 +7,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint src --ext .js --max-warnings=0"
   },
   "dependencies": {
     "@copilotkit/react-core": "^1.57.1",
@@ -16,5 +16,10 @@
     "next": "^16.2.6",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "eslint": "^9.39.4",
+    "eslint-config-next": "^16.2.6",
+    "eslint-plugin-react": "^7.37.5"
   }
 }

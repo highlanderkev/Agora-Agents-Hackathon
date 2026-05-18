@@ -46,7 +46,7 @@ export default function Home() {
           llmConfigured: Boolean(payload.llmConfigured),
           note: payload.note ?? 'Runtime endpoint is reachable.',
         });
-      } catch (error) {
+      } catch (_error) {
         if (!isMounted) {
           return;
         }
@@ -96,7 +96,7 @@ export default function Home() {
         message: 'Swap request submitted successfully.',
         payload,
       });
-    } catch (error) {
+    } catch (_error) {
       setSwapState({
         loading: false,
         message: 'Failed to reach /api/arc/swap endpoint.',
