@@ -57,7 +57,15 @@ export async function runArcTestnetSwap({
 } = {}) {
   const { chain, privateKey, kitKey, explorerUrl } = getConfig();
   const normalizedPrivateKey = normalizePrivateKey(privateKey);
-  const { AppKit, createViemAdapterFromPrivateKey, privateKeyToAccount } = await loadArcSdk();
+
+  let AppKit;
+  let createViemAdapterFromPrivateKey;
+  let privateKeyToAccount;
+
+  if (!(appKitFactory && createAdapter && toAccount)) {
+    ({ AppKit, createViemAdapterFromPrivateKey, privateKeyToAccount } = await loadArcSdk());
+  }
+
   const makeAppKit = appKitFactory ?? (() => new AppKit());
   const makeAdapter = createAdapter ?? createViemAdapterFromPrivateKey;
   const makeAccount = toAccount ?? privateKeyToAccount;
