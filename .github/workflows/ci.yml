@@ -35,6 +35,9 @@ jobs:
       - name: Run type checks
         run: npm run typecheck
 
+      - name: Build Arc Swap
+        run: npm run build:arc-swap
+
       - name: Run Arc Swap tests
         run: npm run test:arc-swap
 

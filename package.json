@@ -8,7 +8,7 @@
     "build:arc-swap": "tsc -p packages/arc-swap/tsconfig.build.json",
     "build:ts": "npm run build:arc-swap",
     "test:arc-swap": "npm --prefix packages/arc-swap run test",
-    "test:ui": "npm --prefix packages/ui run test",
+    "test:ui": "npm run build:arc-swap && npm --prefix packages/ui run test",
     "typecheck:root": "tsc -p tsconfig.json --noEmit",
     "typecheck:ui": "npm --prefix packages/ui run typecheck",
     "typecheck": "npm run typecheck:root && npm run typecheck:ui",
