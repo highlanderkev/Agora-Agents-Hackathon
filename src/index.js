@@ -1,7 +1,7 @@
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
-export { runArcTestnetSwap } from './arcSwapService.js';
 import { runArcTestnetSwap } from './arcSwapService.js';
+export { runArcTestnetSwap };
 
 export function isDirectExecution(importMetaUrl, argv1 = process.argv[1]) {
   if (!argv1) {

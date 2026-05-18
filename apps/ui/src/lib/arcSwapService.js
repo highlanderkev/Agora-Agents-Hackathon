@@ -1,9 +1,11 @@
-import { runArcTestnetSwap } from '../../../../src/arcSwapService.js';
+import { DEFAULT_SWAP_REQUEST, runArcTestnetSwap } from '../../../../src/arcSwapService.js';
 
 export function coerceSwapRequest(input) {
-  const tokenIn = typeof input?.tokenIn === 'string' ? input.tokenIn.trim().toUpperCase() : 'USDC';
-  const tokenOut = typeof input?.tokenOut === 'string' ? input.tokenOut.trim().toUpperCase() : 'EURC';
-  const amountIn = typeof input?.amountIn === 'string' ? input.amountIn.trim() : '0.01';
+  const tokenIn =
+    typeof input?.tokenIn === 'string' ? input.tokenIn.trim().toUpperCase() : DEFAULT_SWAP_REQUEST.tokenIn;
+  const tokenOut =
+    typeof input?.tokenOut === 'string' ? input.tokenOut.trim().toUpperCase() : DEFAULT_SWAP_REQUEST.tokenOut;
+  const amountIn = typeof input?.amountIn === 'string' ? input.amountIn.trim() : DEFAULT_SWAP_REQUEST.amountIn;
 
   return {
     tokenIn,
