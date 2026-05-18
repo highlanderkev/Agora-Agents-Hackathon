@@ -9,15 +9,28 @@ function normalizePrivateKey(privateKey) {
   return privateKey.startsWith('0x') ? privateKey : `0x${privateKey}`;
 }
 
+// Observed Circle SDK insufficient-balance error shape for swap failures.
+// If @circle-fin/app-kit exposes official error constants in a future version,
+// prefer those over these values and keep this check in sync with SDK updates.
+const INSUFFICIENT_BALANCE_ERROR_TYPE = 'BALANCE';
+const INSUFFICIENT_BALANCE_ERROR_CODE = 9001;
+
 function isInsufficientBalanceError(error) {
-  return error?.type === 'BALANCE' && error?.code === 9001;
+  return (
+    error?.type === INSUFFICIENT_BALANCE_ERROR_TYPE &&
+    error?.code === INSUFFICIENT_BALANCE_ERROR_CODE
+  );
+}
+
+function buildExplorerAddressUrl(explorerUrl, walletAddress) {
+  return new URL(`address/${walletAddress}`, explorerUrl).href;
 }
 
 function formatBalanceGuidance({ walletAddress, explorerUrl }) {
   return [
     'Swap failed because the wallet does not have enough token balance on Arc Testnet.',
     `Wallet: ${walletAddress}`,
-    `Explorer: ${explorerUrl}address/${walletAddress}`,
+    `Explorer: ${buildExplorerAddressUrl(explorerUrl, walletAddress)}`,
     'Fix steps:',
     '1) Fund this wallet on Arc Testnet with tokenIn (USDC).',
     '2) Try a smaller amount (for example, 0.10 or 0.01).',
