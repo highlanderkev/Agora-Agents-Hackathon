@@ -11,7 +11,7 @@
     "lint": "eslint src --ext .ts,.tsx --max-warnings=0"
   },
   "dependencies": {
-    "@agora/arc-swap": "file:../../packages/arc-swap",
+    "@agora/arc-swap": "file:../arc-swap",
     "@copilotkit/react-core": "^1.57.1",
     "@copilotkit/react-ui": "^1.57.1",
     "@copilotkit/runtime": "^1.57.1",

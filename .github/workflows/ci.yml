@@ -30,7 +30,7 @@ jobs:
         run: npm ci
 
       - name: Install UI dependencies
-        run: npm --prefix apps/ui ci
+        run: npm --prefix packages/ui ci
 
       - name: Run type checks
         run: npm run typecheck

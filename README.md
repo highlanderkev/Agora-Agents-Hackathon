@@ -44,12 +44,12 @@ This starter uses:
 
 ## CopilotKit UI (Next.js)
 
-A frontend scaffold now lives in `apps/ui` for interacting with custom AI agents.
+A frontend scaffold now lives in `packages/ui` for interacting with custom AI agents.
 
 1. Install UI dependencies:
 
    ```bash
-   npm --prefix apps/ui install
+   npm --prefix packages/ui install
    ```
 
 2. Start the UI:

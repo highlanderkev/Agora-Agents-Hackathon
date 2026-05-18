@@ -8,9 +8,8 @@
     "outDir": "dist"
   },
   "include": [
-    "src/**/*.ts",
     "test/**/*.ts",
-    "apps/ui/src/lib/**/*.ts"
+    "packages/ui/src/lib/**/*.ts"
   ],
   "exclude": [
     "packages/**"

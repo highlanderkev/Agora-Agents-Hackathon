@@ -16,13 +16,12 @@
     "paths": {
       "@agora/arc-swap": ["packages/arc-swap/src/index.ts"],
       "@agora/arc-swap/config": ["packages/arc-swap/src/config.ts"],
-      "@/*": ["apps/ui/src/*"]
+      "@/*": ["packages/ui/src/*"]
     }
   },
   "include": [
-    "src/**/*.ts",
     "test/**/*.ts",
     "packages/arc-swap/src/**/*.ts",
-    "apps/ui/src/lib/**/*.ts"
+    "packages/ui/src/lib/**/*.ts"
   ]
 }
