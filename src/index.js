@@ -22,7 +22,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       console.log('Arc testnet swap request submitted:', result);
     })
     .catch((error) => {
-      console.error('Arc testnet starter flow failed:', error.message);
+      console.error('Arc testnet starter flow failed:', error);
       process.exitCode = 1;
     });
 }
