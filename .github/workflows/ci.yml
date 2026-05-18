@@ -32,11 +32,11 @@ jobs:
       - name: Install UI dependencies
         run: npm --prefix packages/ui ci
 
-      - name: Run type checks
-        run: npm run typecheck
-
       - name: Build Arc Swap
         run: npm run build:arc-swap
+
+      - name: Run type checks
+        run: npm run typecheck
 
       - name: Run Arc Swap tests
         run: npm run test:arc-swap

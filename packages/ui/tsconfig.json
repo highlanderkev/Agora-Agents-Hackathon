@@ -20,12 +20,6 @@
     "paths": {
       "@/*": [
         "./src/*"
-      ],
-      "@agora/arc-swap": [
-        "../arc-swap/src/index.ts"
-      ],
-      "@agora/arc-swap/config": [
-        "../arc-swap/src/config.ts"
       ]
     },
     "plugins": [
@@ -39,7 +33,6 @@
     "next-env.d.ts",
     "src/**/*.ts",
     "src/**/*.tsx",
-    "../arc-swap/src/**/*.ts",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
   ],
