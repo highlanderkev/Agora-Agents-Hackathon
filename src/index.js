@@ -1,12 +1,23 @@
-import { AppKit } from '@circle-fin/app-kit';
-import { createViemAdapterFromPrivateKey } from '@circle-fin/adapter-viem-v2';
-import { privateKeyToAccount } from 'viem/accounts';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { getArcConfig } from './config.js';
 
 function normalizePrivateKey(privateKey) {
   return privateKey.startsWith('0x') ? privateKey : `0x${privateKey}`;
+}
+
+async function loadArcSdk() {
+  const [{ AppKit }, { createViemAdapterFromPrivateKey }, { privateKeyToAccount }] = await Promise.all([
+    import('@circle-fin/app-kit'),
+    import('@circle-fin/adapter-viem-v2'),
+    import('viem/accounts'),
+  ]);
+
+  return {
+    AppKit,
+    createViemAdapterFromPrivateKey,
+    privateKeyToAccount,
+  };
 }
 
 // Observed Circle SDK insufficient-balance error shape for swap failures.
@@ -40,15 +51,19 @@ function formatBalanceGuidance({ walletAddress, explorerUrl }) {
 
 export async function runArcTestnetSwap({
   getConfig = getArcConfig,
-  appKitFactory = () => new AppKit(),
-  createAdapter = createViemAdapterFromPrivateKey,
-  toAccount = privateKeyToAccount,
+  appKitFactory,
+  createAdapter,
+  toAccount,
 } = {}) {
   const { chain, privateKey, kitKey, explorerUrl } = getConfig();
   const normalizedPrivateKey = normalizePrivateKey(privateKey);
-  const walletAddress = toAccount(normalizedPrivateKey).address;
-  const kit = appKitFactory();
-  const adapter = createAdapter({ privateKey: normalizedPrivateKey });
+  const { AppKit, createViemAdapterFromPrivateKey, privateKeyToAccount } = await loadArcSdk();
+  const makeAppKit = appKitFactory ?? (() => new AppKit());
+  const makeAdapter = createAdapter ?? createViemAdapterFromPrivateKey;
+  const makeAccount = toAccount ?? privateKeyToAccount;
+  const walletAddress = makeAccount(normalizedPrivateKey).address;
+  const kit = makeAppKit();
+  const adapter = makeAdapter({ privateKey: normalizedPrivateKey });
 
   try {
     return await kit.swap({
