@@ -18,7 +18,10 @@ coverage/
 dist/
 build/
 .next/
-apps/ui/.next/
+packages/ui/.next/
+packages/arc-swap/dist-test/
+packages/ui/dist-test/
+*.tsbuildinfo
 
 # IDE and editor files
 .vscode/*

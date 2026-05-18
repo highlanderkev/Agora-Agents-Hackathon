@@ -28,6 +28,14 @@ Requires Node.js 20.18.0 or newer.
    npm start
    ```
 
+`npm start` now compiles TypeScript first and then runs the built package CLI from `packages/arc-swap/dist/cli.js`.
+
+## TypeScript workflow
+
+- `npm run typecheck`: strict type checks for root and UI
+- `npm test`: package-scoped test flow (`npm run test:arc-swap` + `npm run test:ui`)
+- `npm run build:ts`: builds shared package and root/test TS outputs
+
 This starter uses:
 - Arc Agent SDK App Kit: `@circle-fin/app-kit`
 - Viem adapter: `@circle-fin/adapter-viem-v2`
@@ -36,12 +44,12 @@ This starter uses:
 
 ## CopilotKit UI (Next.js)
 
-A frontend scaffold now lives in `apps/ui` for interacting with custom AI agents.
+A frontend scaffold now lives in `packages/ui` for interacting with custom AI agents.
 
 1. Install UI dependencies:
 
    ```bash
-   npm --prefix apps/ui install
+   npm --prefix packages/ui install
    ```
 
 2. Start the UI:
@@ -62,7 +70,7 @@ Current status:
 The Next.js app now includes a local endpoint at `/api/arc/swap`.
 
 - `GET /api/arc/swap`: health/usage metadata
-- `POST /api/arc/swap`: executes `runArcTestnetSwap` from `src/arcSwapService.js`
+- `POST /api/arc/swap`: executes `runArcTestnetSwap` from the shared package `@agora/arc-swap`
 - Swap execution is intentionally limited to local development requests because it uses the server-side wallet configured by `PRIVATE_KEY`.
 
 Example request:
@@ -77,7 +85,7 @@ curl -X POST http://localhost:3000/api/arc/swap \
 
 The UI app includes `/api/copilotkit` for CopilotKit chat runtime traffic.
 
-- It registers backend action `runArcSwap` that uses `src/arcSwapService.js`.
+- It registers backend action `runArcSwap` that uses the shared package `@agora/arc-swap`.
 - Transaction-capable runtime requests are only enabled from local development because they use the server-side wallet configured by `PRIVATE_KEY`.
 - For LLM-driven chat responses and tool selection, set:
 

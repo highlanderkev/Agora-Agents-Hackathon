@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": false,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@agora/arc-swap": ["packages/arc-swap/src/index.ts"],
+      "@agora/arc-swap/config": ["packages/arc-swap/src/config.ts"],
+      "@/*": ["packages/ui/src/*"]
+    }
+  },
+  "include": [
+    "packages/arc-swap/src/**/*.ts",
+    "packages/arc-swap/test/**/*.ts",
+    "packages/ui/src/lib/**/*.ts",
+    "packages/ui/test/**/*.ts"
+  ]
+}

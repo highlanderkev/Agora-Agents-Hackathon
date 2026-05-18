@@ -30,10 +30,19 @@ jobs:
         run: npm ci
 
       - name: Install UI dependencies
-        run: npm --prefix apps/ui ci
+        run: npm --prefix packages/ui ci
 
-      - name: Run tests
-        run: npm test
+      - name: Build Arc Swap
+        run: npm run build:arc-swap
+
+      - name: Run type checks
+        run: npm run typecheck
+
+      - name: Run Arc Swap tests
+        run: npm run test:arc-swap
+
+      - name: Run UI tests
+        run: npm run test:ui
 
       - name: Lint UI
         run: npm run lint:ui
