@@ -53,3 +53,86 @@ body {
   color: var(--muted);
   font-size: 0.95rem;
 }
+
+.runtimeHealth {
+  margin-top: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.75rem 0.9rem;
+  background: #f9fafb;
+}
+
+.runtimeHealth strong {
+  display: block;
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+.runtimeHealth p {
+  margin: 0.35rem 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.swapForm {
+  margin-top: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.9rem;
+  background: #fcfcfd;
+}
+
+.swapForm h2 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.fieldRow {
+  display: grid;
+  gap: 0.3rem;
+  margin-top: 0.65rem;
+}
+
+.fieldRow label {
+  font-size: 0.86rem;
+  color: var(--muted);
+}
+
+.fieldRow input {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.55rem 0.65rem;
+  font: inherit;
+}
+
+.swapForm button {
+  margin-top: 0.8rem;
+  border: 0;
+  border-radius: 8px;
+  background: var(--accent);
+  color: white;
+  padding: 0.55rem 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.swapForm button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.swapMessage {
+  margin-top: 0.65rem;
+  font-size: 0.9rem;
+}
+
+.swapPayload {
+  margin-top: 0.5rem;
+  min-height: 72px;
+  border-radius: 8px;
+  background: #122230;
+  color: #e9f7ff;
+  padding: 0.7rem;
+  font-size: 0.82rem;
+  overflow: auto;
+}
