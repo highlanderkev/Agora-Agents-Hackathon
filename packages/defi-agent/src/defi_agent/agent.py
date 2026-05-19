@@ -14,11 +14,24 @@ class DeFiAgent:
     llm_client: Any
     tool_executor: Any
     system_prompt: str
-    tools: list[str]
+    tools: list[str] | None = None
+
+    def __post_init__(self) -> None:
+        if self.tools is None:
+            if hasattr(self.policy, "allowed_tools"):
+                self.tools = list(self.policy.allowed_tools)
+            else:
+                raise ValueError(
+                    "Either provide 'tools' explicitly or ensure 'policy' has "
+                    "'allowed_tools' attribute."
+                )
 
     async def run(self, *, once: bool = True, mock: bool = False) -> dict[str, Any]:
         if not mock:
             self.config.require_api_key()
+
+        if self.tools is None:
+            raise ValueError("Agent tools not initialized. This should not happen.")
 
         user_prompt = "Run one safe strategy decision cycle."
         if not once:

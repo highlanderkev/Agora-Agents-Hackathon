@@ -99,14 +99,35 @@ async def run_agent_loop(
                 "transcript": transcript,
             }
 
-        tool_result = await tool_executor.execute(tool_name, arguments)
-        tool_event = {
-            "step": step,
-            "role": "tool",
-            "tool": tool_name,
-            "arguments": arguments,
-            "result": tool_result,
-        }
+        try:
+            tool_result = await tool_executor.execute(tool_name, arguments)
+            tool_event = {
+                "step": step,
+                "role": "tool",
+                "tool": tool_name,
+                "arguments": arguments,
+                "result": tool_result,
+            }
+        except Exception as exc:
+            error = f"Tool execution failed: {exc}"
+            tool_event = {
+                "step": step,
+                "role": "tool",
+                "tool": tool_name,
+                "arguments": arguments,
+                "status": "failed",
+                "error": error,
+            }
+            transcript.append(tool_event)
+            if trace_sink:
+                trace_sink(tool_event)
+            return {
+                "status": "failed",
+                "steps": step,
+                "error": error,
+                "transcript": transcript,
+            }
+
         transcript.append(tool_event)
         if trace_sink:
             trace_sink(tool_event)

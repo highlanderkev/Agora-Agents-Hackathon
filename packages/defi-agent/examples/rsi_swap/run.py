@@ -53,7 +53,6 @@ async def main() -> None:
         llm_client=llm_client,
         tool_executor=DemoToolExecutor(),
         system_prompt=SWAP_SYSTEM_PROMPT,
-        tools=["get_price", "get_balance", "get_indicator", "swap_tokens", "record_decision"],
     )
 
     result = await agent.run(once=args.once, mock=args.mock)

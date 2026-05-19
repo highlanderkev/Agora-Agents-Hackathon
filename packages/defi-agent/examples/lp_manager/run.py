@@ -49,14 +49,6 @@ async def main() -> None:
         llm_client=llm_client,
         tool_executor=DemoToolExecutor(),
         system_prompt=LP_SYSTEM_PROMPT,
-        tools=[
-            "get_price",
-            "get_balance",
-            "open_lp_position",
-            "close_lp_position",
-            "swap_tokens",
-            "record_decision",
-        ],
     )
 
     result = await agent.run(once=args.once, mock=args.mock)
