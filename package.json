@@ -18,7 +18,13 @@
     "dev:ui": "npm --prefix packages/ui run dev",
     "build:ui": "npm run build:arc-swap && npm --prefix packages/ui run build",
     "start:ui": "npm --prefix packages/ui run start",
-    "lint:ui": "npm --prefix packages/ui run lint"
+    "lint:ui": "npm --prefix packages/ui run lint",
+    "py:defi-agent:sync": "cd packages/defi-agent && uv sync --group dev",
+    "py:defi-agent:lint": "cd packages/defi-agent && uv run ruff check src tests examples",
+    "py:defi-agent:test": "cd packages/defi-agent && uv run pytest tests",
+    "py:defi-agent:run:rsi:mock": "cd packages/defi-agent && uv run python examples/rsi_swap/run.py --once --mock",
+    "py:defi-agent:run:lp": "cd packages/defi-agent && uv run python examples/lp_manager/run.py --once",
+    "py:defi-agent:run:yield": "cd packages/defi-agent && uv run python examples/yield_farmer/run.py --once"
   },
   "engines": {
     "node": ">=20.18.0"

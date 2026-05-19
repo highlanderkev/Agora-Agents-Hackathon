@@ -1,0 +1,9 @@
+{
+  "strategy": "yield_farmer",
+  "chain": "avalanche",
+  "lending_protocol": "aave_v3",
+  "deposit_token": "USDC",
+  "rotation_token": "WAVAX",
+  "max_position_usd": 2000,
+  "max_trade_usd": 200
+}
