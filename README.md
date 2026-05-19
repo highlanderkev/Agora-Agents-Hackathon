@@ -180,7 +180,8 @@ uv run python examples/lp_manager/run.py --mock --once
 # Yield farmer — mock mode
 uv run python examples/yield_farmer/run.py --mock --once
 
-# Real mode (requires AGENT_LLM_API_KEY and a running Almanak gateway)
+# Real mode (requires AGENT_LLM_API_KEY; an Almanak gateway is only needed
+# when using a real Almanak-backed tool executor instead of the demo executor)
 uv run python examples/rsi_swap/run.py --once
 ```
 
