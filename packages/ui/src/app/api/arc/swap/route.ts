@@ -1,22 +1,9 @@
-import { executeArcSwap } from '@/lib/arcSwapService';
+import { errorResponse, readJsonObjectBody } from '@/lib/agents/http';
+import { resolveAgentAdapter } from '@/lib/agents/registry';
 import {
   createServerWalletAccessDeniedResponse,
   isServerWalletAccessAllowed,
 } from '@/lib/serverWalletAccess';
-
-async function readJsonBody(request: Request): Promise<Record<string, unknown>> {
-  try {
-    const value: unknown = await request.json();
-
-    if (value && typeof value === 'object' && !Array.isArray(value)) {
-      return value as Record<string, unknown>;
-    }
-
-    return {};
-  } catch {
-    return {};
-  }
-}
 
 export async function POST(request: Request): Promise<Response> {
   if (!isServerWalletAccessAllowed(request)) {
@@ -24,22 +11,19 @@ export async function POST(request: Request): Promise<Response> {
   }
 
   try {
-    const body = await readJsonBody(request);
-    const { swapRequest, result } = await executeArcSwap(body);
+    const adapter = resolveAgentAdapter('arc-swap');
+    const body = await readJsonObjectBody(request);
+    const result = await adapter.execute({ action: 'swap', input: body });
 
-    return Response.json({
-      ok: true,
-      swapRequest,
-      result,
-    });
+    if (!result.ok) {
+      return Response.json(result, {
+        status: result.statusCode ?? 500,
+      });
+    }
+
+    return Response.json(result);
   } catch (error) {
-    return Response.json(
-      {
-        ok: false,
-        error: error instanceof Error ? error.message : 'Swap request failed',
-      },
-      { status: 500 },
-    );
+    return errorResponse(error, 'Swap request failed');
   }
 }
 
