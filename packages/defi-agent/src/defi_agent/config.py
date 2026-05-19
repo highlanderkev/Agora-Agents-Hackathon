@@ -14,6 +14,10 @@ class AgentConfig(BaseSettings):
     )
     llm_model: str = Field(default="gpt-4o", validation_alias="AGENT_LLM_MODEL")
     decision_trace_path: Path = Path("traces/agent_decisions.jsonl")
+    share_full_transcript: bool = Field(
+        default=False,
+        validation_alias="AGENT_SHARE_FULL_TRANSCRIPT",
+    )
 
     model_config = SettingsConfigDict(
         env_file=".env",

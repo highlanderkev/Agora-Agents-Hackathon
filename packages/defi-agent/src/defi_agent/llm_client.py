@@ -37,11 +37,13 @@ class OpenAICompatibleLLMClient:
         base_url: str,
         api_key: str,
         timeout_seconds: float = 30.0,
+        share_full_transcript: bool = False,
     ) -> None:
         self.model = model
         self.base_url = base_url.rstrip("/")
         self.api_key = api_key
         self.timeout_seconds = timeout_seconds
+        self.share_full_transcript = share_full_transcript
 
     @staticmethod
     def _coerce_action(payload: Any) -> dict[str, Any]:
@@ -87,10 +89,32 @@ class OpenAICompatibleLLMClient:
             raise ValueError("Failed to parse JSON action from LLM response.") from exc
 
     @staticmethod
-    def _build_transcript_summary(transcript: list[dict[str, Any]]) -> str:
+    def _redact_transcript_event(event: dict[str, Any]) -> dict[str, Any]:
+        """Redact sensitive fields from a transcript event, keeping only metadata."""
+        redacted: dict[str, Any] = {
+            "step": event.get("step"),
+            "role": event.get("role"),
+            "tool": event.get("tool"),
+        }
+        if "status" in event:
+            redacted["status"] = event["status"]
+        if "error" in event:
+            redacted["error"] = "[REDACTED]"
+        # Omit 'arguments' and 'result' to prevent data leakage
+        return redacted
+
+    def _build_transcript_summary(self, transcript: list[dict[str, Any]]) -> str:
         if not transcript:
             return "No prior tool calls."
-        return json.dumps(transcript[-8:], default=str)
+        
+        events_to_share = transcript[-8:]
+        if self.share_full_transcript:
+            # Share full transcript including arguments and results
+            return json.dumps(events_to_share, default=str)
+        else:
+            # Redact sensitive fields by default
+            redacted_events = [self._redact_transcript_event(e) for e in events_to_share]
+            return json.dumps(redacted_events, default=str)
 
     async def next_action(
         self,

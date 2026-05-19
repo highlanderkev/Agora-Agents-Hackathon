@@ -142,3 +142,90 @@ async def test_next_action_raises_runtime_error_on_http_failure(
             transcript=[],
             tools=["get_balance"],
         )
+
+
+def test_redact_transcript_event_removes_sensitive_fields() -> None:
+    event = {
+        "step": 1,
+        "role": "tool",
+        "tool": "get_balance",
+        "arguments": {"token": "USDC", "address": "0x123..."},
+        "result": {"balance": "1000.50", "address": "0x123..."},
+    }
+
+    redacted = OpenAICompatibleLLMClient._redact_transcript_event(event)
+
+    assert redacted["step"] == 1
+    assert redacted["role"] == "tool"
+    assert redacted["tool"] == "get_balance"
+    assert "arguments" not in redacted
+    assert "result" not in redacted
+
+
+def test_redact_transcript_event_preserves_status_and_error() -> None:
+    event = {
+        "step": 2,
+        "role": "tool",
+        "tool": "swap_tokens",
+        "arguments": {"from": "ETH", "to": "USDC"},
+        "status": "failed",
+        "error": "Insufficient balance: 0.5 ETH",
+    }
+
+    redacted = OpenAICompatibleLLMClient._redact_transcript_event(event)
+
+    assert redacted["status"] == "failed"
+    assert redacted["error"] == "[REDACTED]"
+    assert "arguments" not in redacted
+
+
+def test_build_transcript_summary_redacts_by_default() -> None:
+    client = OpenAICompatibleLLMClient(
+        model="gpt-4o",
+        base_url="https://api.openai.com/v1",
+        api_key="test-key",
+        share_full_transcript=False,
+    )
+
+    transcript = [
+        {
+            "step": 1,
+            "role": "tool",
+            "tool": "get_balance",
+            "arguments": {"token": "USDC"},
+            "result": {"balance": "1000.50"},
+        }
+    ]
+
+    summary = client._build_transcript_summary(transcript)
+
+    assert "arguments" not in summary
+    assert "result" not in summary
+    assert "get_balance" in summary
+    assert "1000.50" not in summary
+
+
+def test_build_transcript_summary_shares_full_when_enabled() -> None:
+    client = OpenAICompatibleLLMClient(
+        model="gpt-4o",
+        base_url="https://api.openai.com/v1",
+        api_key="test-key",
+        share_full_transcript=True,
+    )
+
+    transcript = [
+        {
+            "step": 1,
+            "role": "tool",
+            "tool": "get_balance",
+            "arguments": {"token": "USDC"},
+            "result": {"balance": "1000.50"},
+        }
+    ]
+
+    summary = client._build_transcript_summary(transcript)
+
+    assert "arguments" in summary
+    assert "result" in summary
+    assert "USDC" in summary
+    assert "1000.50" in summary

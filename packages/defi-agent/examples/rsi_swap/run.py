@@ -45,6 +45,7 @@ async def main() -> None:
             model=config.llm_model,
             base_url=config.llm_base_url,
             api_key=config.require_api_key(),
+            share_full_transcript=config.share_full_transcript,
         )
 
     agent = DeFiAgent(
