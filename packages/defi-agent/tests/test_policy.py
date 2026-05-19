@@ -1,6 +1,9 @@
 from __future__ import annotations
 
 from decimal import Decimal
+from unittest.mock import MagicMock
+
+import pytest
 
 from defi_agent import policy
 
@@ -39,3 +42,28 @@ def test_make_yield_policy(monkeypatch) -> None:
     assert isinstance(result, DummyPolicy)
     assert "supply_lending" in result.kwargs["allowed_tools"]
     assert result.kwargs["stop_loss_pct"] == Decimal("7.0")
+
+
+def test_load_agent_policy_cls_raises_clear_error_on_missing_module(monkeypatch) -> None:
+    def mock_import_module(name: str):
+        raise ModuleNotFoundError(f"No module named '{name}'")
+
+    monkeypatch.setattr("defi_agent.policy.import_module", mock_import_module)
+
+    with pytest.raises(ImportError, match="Failed to import 'almanak.framework.agent_tools'"):
+        policy._load_agent_policy_cls()
+
+
+def test_load_agent_policy_cls_raises_clear_error_on_missing_attribute(monkeypatch) -> None:
+    mock_module = MagicMock()
+    del mock_module.AgentPolicy
+
+    def mock_import_module(name: str):
+        return mock_module
+
+    monkeypatch.setattr("defi_agent.policy.import_module", mock_import_module)
+
+    with pytest.raises(
+        ImportError, match="does not have 'AgentPolicy' attribute"
+    ):
+        policy._load_agent_policy_cls()

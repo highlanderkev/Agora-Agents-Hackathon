@@ -6,8 +6,23 @@ from typing import Any
 
 
 def _load_agent_policy_cls() -> type:
-    module = import_module("almanak.framework.agent_tools")
-    return module.AgentPolicy
+    try:
+        module = import_module("almanak.framework.agent_tools")
+    except ModuleNotFoundError as exc:
+        raise ImportError(
+            "Failed to import 'almanak.framework.agent_tools'. "
+            "Ensure the 'almanak' package is installed correctly. "
+            "Install it with: pip install almanak"
+        ) from exc
+
+    try:
+        return module.AgentPolicy
+    except AttributeError as exc:
+        raise ImportError(
+            "Module 'almanak.framework.agent_tools' does not have 'AgentPolicy' attribute. "
+            "The Almanak package structure may have changed. "
+            "Check the package documentation or update this code."
+        ) from exc
 
 
 def _build_policy(**kwargs: Any) -> Any:
