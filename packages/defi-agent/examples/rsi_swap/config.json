@@ -1,0 +1,10 @@
+{
+  "strategy": "rsi_swap",
+  "chain": "arbitrum",
+  "base_token": "WETH",
+  "quote_token": "USDC",
+  "rsi_period": 14,
+  "buy_threshold": 30,
+  "sell_threshold": 70,
+  "max_trade_usd": 100
+}

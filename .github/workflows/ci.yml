@@ -49,3 +49,34 @@ jobs:
 
       - name: Build UI
         run: npm run build:ui
+
+  defi-agent:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: packages/defi-agent
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Install Python dependencies
+        run: uv sync --group dev
+
+      - name: Lint Python package
+        run: uv run ruff check src tests examples
+
+      - name: Type check Python package
+        run: uv run mypy src
+
+      - name: Run Python tests
+        run: uv run pytest tests

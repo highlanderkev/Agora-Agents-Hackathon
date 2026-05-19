@@ -1,0 +1,8 @@
+{
+  "strategy": "lp_manager",
+  "chain": "avalanche",
+  "pair": "WAVAX/USDC",
+  "rebalance_threshold_pct": 3.0,
+  "max_position_usd": 1000,
+  "max_trade_usd": 150
+}
