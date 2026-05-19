@@ -79,6 +79,26 @@ async def run_agent_loop(
                 "transcript": transcript,
             }
 
+        if tool_name not in tools:
+            error = f"Agent requested unauthorized tool: {tool_name}."
+            tool_event = {
+                "step": step,
+                "role": "tool",
+                "tool": tool_name,
+                "arguments": arguments,
+                "status": "failed",
+                "error": error,
+            }
+            transcript.append(tool_event)
+            if trace_sink:
+                trace_sink(tool_event)
+            return {
+                "status": "failed",
+                "steps": step,
+                "error": error,
+                "transcript": transcript,
+            }
+
         tool_result = await tool_executor.execute(tool_name, arguments)
         tool_event = {
             "step": step,
