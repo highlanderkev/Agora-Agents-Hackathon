@@ -55,8 +55,8 @@ def test_load_agent_policy_cls_raises_clear_error_on_missing_module(monkeypatch)
 
 
 def test_load_agent_policy_cls_raises_clear_error_on_missing_attribute(monkeypatch) -> None:
-    mock_module = MagicMock()
-    del mock_module.AgentPolicy
+    # Use MagicMock with empty spec to create a module that genuinely lacks AgentPolicy
+    mock_module = MagicMock(spec=[])
 
     def mock_import_module(name: str):
         return mock_module
