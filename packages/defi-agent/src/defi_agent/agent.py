@@ -19,7 +19,7 @@ class DeFiAgent:
     def __post_init__(self) -> None:
         if self.tools is None:
             if hasattr(self.policy, "allowed_tools"):
-                self.tools = list(self.policy.allowed_tools)
+                self.tools = sorted(self.policy.allowed_tools)
             else:
                 raise ValueError(
                     "Either provide 'tools' explicitly or ensure 'policy' has "
@@ -35,7 +35,10 @@ class DeFiAgent:
 
         user_prompt = "Run one safe strategy decision cycle."
         if not once:
-            user_prompt = "Run continuous strategy cycles while respecting policy limits."
+            user_prompt = (
+                "Run an extended safe strategy decision cycle within the configured "
+                "loop limits while respecting policy limits."
+            )
 
         trace_sink = make_file_trace_sink(self.config.decision_trace_path)
 
