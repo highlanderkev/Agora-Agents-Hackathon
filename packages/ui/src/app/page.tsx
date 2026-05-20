@@ -256,15 +256,19 @@ export default function Home() {
 
   const selectedAgent = agentCatalog.agents.find((agent) => agent.id === selectedAgentId);
 
-  async function executeAgentAction(action: string, input: Record<string, unknown>) {
+  async function executeAgentAction(
+    action: string,
+    input: Record<string, unknown>,
+    agentId = selectedAgentId,
+  ) {
     setSwapState({
       loading: true,
-      message: `Submitting ${selectedAgentId}/${action}...`,
+      message: `Submitting ${agentId}/${action}...`,
       payload: null,
     });
 
     try {
-      const response = await fetch(`/api/agents/${selectedAgentId}/execute`, {
+      const response = await fetch(`/api/agents/${agentId}/execute`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -291,7 +295,7 @@ export default function Home() {
     } catch {
       setSwapState({
         loading: false,
-        message: `Failed to reach /api/agents/${selectedAgentId}/execute endpoint.`,
+        message: `Failed to reach /api/agents/${agentId}/execute endpoint.`,
         payload: null,
       });
     }
@@ -299,7 +303,7 @@ export default function Home() {
 
   async function handleTrySwap(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    await executeAgentAction('swap', swapForm as unknown as Record<string, unknown>);
+    await executeAgentAction('swap', swapForm as unknown as Record<string, unknown>, 'arc-swap');
   }
 
   async function handleRunGenericAction(event: FormEvent<HTMLFormElement>) {
