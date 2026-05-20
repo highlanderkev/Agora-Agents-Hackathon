@@ -28,7 +28,7 @@ from .config import AgentConfig
 from .llm_client import MockLLMClient, OpenAICompatibleLLMClient
 from .policy import make_lp_policy, make_swap_policy, make_yield_policy
 from .prompts import LP_SYSTEM_PROMPT, SWAP_SYSTEM_PROMPT, YIELD_SYSTEM_PROMPT
-from .tool_executor import DemoToolExecutor
+from .tool_executor import AlmanakToolExecutor, DemoToolExecutor
 
 app = FastAPI(title="DeFi Agent Service", version="0.1.0")
 
@@ -135,7 +135,10 @@ _STRATEGY_CONFIG: dict[str, dict[str, Any]] = {
             {
                 "type": "tool",
                 "tool": "record_decision",
-                "arguments": {"decision": "hold", "reason": "Yield conditions unchanged (mock run)."},
+                "arguments": {
+                    "decision": "hold",
+                    "reason": "Yield conditions unchanged (mock run).",
+                },
             },
             {"type": "final", "message": "Mock yield farmer cycle complete."},
         ],
@@ -145,21 +148,24 @@ _STRATEGY_CONFIG: dict[str, dict[str, Any]] = {
 
 def _build_agent(config: AgentConfig, strategy: str, mock: bool) -> DeFiAgent:
     strategy_cfg = _STRATEGY_CONFIG[strategy]
+    policy = strategy_cfg["policy_factory"]()
 
     if mock:
         llm_client: Any = MockLLMClient(strategy_cfg["mock_actions"])
+        tool_executor: Any = DemoToolExecutor()
     else:
         llm_client = OpenAICompatibleLLMClient(
             model=config.llm_model,
             base_url=config.llm_base_url,
             api_key=config.require_api_key(),
         )
+        tool_executor = AlmanakToolExecutor(policy=policy)
 
     return DeFiAgent(
         config=config,
-        policy=strategy_cfg["policy_factory"](),
+        policy=policy,
         llm_client=llm_client,
-        tool_executor=DemoToolExecutor(),
+        tool_executor=tool_executor,
         system_prompt=strategy_cfg["system_prompt"],
         tools=strategy_cfg["tools"],
     )

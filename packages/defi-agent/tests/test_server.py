@@ -10,7 +10,8 @@ from __future__ import annotations
 import pytest
 from fastapi.testclient import TestClient
 
-from defi_agent.server import app
+from defi_agent.server import STRATEGY_SWAP, _build_agent, app
+from defi_agent.tool_executor import DemoToolExecutor
 
 client = TestClient(app)
 
@@ -120,3 +121,34 @@ def test_execute_no_api_key_real_mode_returns_503(monkeypatch):
     data = response.json()
     assert data["ok"] is False
     assert "AGENT_LLM_API_KEY" in data["error"]
+
+
+def test_build_agent_mock_mode_uses_demo_executor():
+    from defi_agent.server import AgentConfig
+
+    agent = _build_agent(AgentConfig(), STRATEGY_SWAP, mock=True)
+
+    assert isinstance(agent.tool_executor, DemoToolExecutor)
+
+
+def test_build_agent_real_mode_uses_almanak_executor(monkeypatch):
+    import defi_agent.server as server
+    from defi_agent.server import AgentConfig
+
+    created: dict[str, object] = {}
+
+    class DummyRealExecutor:
+        def __init__(self, *, policy: object) -> None:
+            created["policy"] = policy
+
+        async def execute(self, tool_name: str, arguments: dict[str, object]) -> dict[str, object]:
+            return {"status": "success", "tool": tool_name, "arguments": arguments}
+
+    monkeypatch.setattr(server, "AlmanakToolExecutor", DummyRealExecutor)
+    monkeypatch.setenv("AGENT_LLM_API_KEY", "test-key")
+
+    config = AgentConfig()
+    agent = _build_agent(config, STRATEGY_SWAP, mock=False)
+
+    assert isinstance(agent.tool_executor, DummyRealExecutor)
+    assert agent.policy is created["policy"]
