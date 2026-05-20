@@ -3,20 +3,7 @@
 import { useEffect, useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
 import { CopilotSidebar } from '@copilotkit/react-core/v2';
-
-interface AgentCapabilities {
-  supportsMockMode: boolean;
-  requiresLocalWalletAccess: boolean;
-  supportedActions: string[];
-  llmMode: 'agent-owned' | 'ui-owned' | 'hybrid';
-}
-
-interface AgentMetadata {
-  id: string;
-  name: string;
-  description: string;
-  capabilities: AgentCapabilities;
-}
+import type { AgentCapabilities, AgentMetadata } from '../lib/agents/types';
 
 interface RuntimeHealth {
   loading: boolean;

@@ -2,12 +2,12 @@ import { errorResponse } from '@/lib/agents/http';
 import { resolveAgentAdapter } from '@/lib/agents/registry';
 
 interface HealthRouteContext {
-  params: Promise<{ agentId: string }>;
+  params: { agentId: string };
 }
 
 export async function GET(_request: Request, context: HealthRouteContext): Promise<Response> {
   try {
-    const { agentId } = await context.params;
+    const { agentId } = context.params;
     const adapter = resolveAgentAdapter(agentId);
     const health = await adapter.health();
 
