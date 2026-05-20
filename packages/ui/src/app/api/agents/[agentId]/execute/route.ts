@@ -4,12 +4,12 @@ import { isServerWalletAccessAllowed, createServerWalletAccessDeniedResponse } f
 import type { AgentExecutionRequest } from '@/lib/agents/types';
 
 interface ExecuteRouteContext {
-  params: { agentId: string };
+  params: Promise<{ agentId: string }>;
 }
 
 export async function POST(request: Request, context: ExecuteRouteContext): Promise<Response> {
   try {
-    const { agentId } = context.params;
+    const { agentId } = await context.params;
     const adapter = resolveAgentAdapter(agentId);
 
     if (
