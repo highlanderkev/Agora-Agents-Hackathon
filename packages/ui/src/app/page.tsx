@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
 import { CopilotSidebar } from '@copilotkit/react-core/v2';
-import type { AgentCapabilities, AgentMetadata } from '../lib/agents/types';
+import type { AgentMetadata } from '../lib/agents/types';
 
 interface RuntimeHealth {
   loading: boolean;
