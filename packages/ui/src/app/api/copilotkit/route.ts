@@ -4,12 +4,28 @@ import {
   OpenAIAdapter,
   copilotRuntimeNextJSAppRouterEndpoint,
 } from '@copilotkit/runtime';
-import { executeArcSwap } from '@/lib/arcSwapService';
+import { resolveAgentAdapter } from '@/lib/agents/registry';
 import {
   createServerWalletAccessDeniedResponse,
   isServerWalletAccessAllowed,
 } from '@/lib/serverWalletAccess';
 import type { SwapRequestInput } from '@/lib/arcSwapService';
+
+interface GenericAgentActionInput {
+  agentId?: unknown;
+  action?: unknown;
+  input?: unknown;
+}
+
+function toStringOrEmpty(value: unknown): string {
+  return typeof value === 'string' ? value.trim() : '';
+}
+
+function toInputObject(value: unknown): Record<string, unknown> {
+  return value && typeof value === 'object' && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : {};
+}
 
 const runtime = new CopilotRuntime({
   actions: [
@@ -38,13 +54,62 @@ const runtime = new CopilotRuntime({
         },
       ],
       handler: async (args: SwapRequestInput) => {
-        const { swapRequest, result } = await executeArcSwap(args);
+        const adapter = resolveAgentAdapter('arc-swap');
+        const result = await adapter.execute({
+          action: 'swap',
+          input: toInputObject(args),
+        });
 
-        return {
-          ok: true,
-          swapRequest,
-          result,
-        };
+        if (!result.ok) {
+          throw new Error(result.error);
+        }
+
+        return result;
+      },
+    },
+    {
+      name: 'runAgentAction',
+      description:
+        'Run an action on a specific agent adapter. Requires agentId and action, with optional input object.',
+      parameters: [
+        {
+          name: 'agentId',
+          type: 'string',
+          description: 'Registered agent id, for example arc-swap or defi-agent.',
+          required: true,
+        },
+        {
+          name: 'action',
+          type: 'string',
+          description: 'Action to execute on the target agent.',
+          required: true,
+        },
+        {
+          name: 'input',
+          type: 'object',
+          description: 'Optional action input object.',
+          required: false,
+        },
+      ],
+      handler: async (args: GenericAgentActionInput) => {
+        const agentId = toStringOrEmpty(args.agentId);
+        const action = toStringOrEmpty(args.action);
+
+        if (!agentId || !action) {
+          throw new Error('runAgentAction requires non-empty agentId and action.');
+        }
+
+        const adapter = resolveAgentAdapter(agentId);
+        const result = await adapter.execute({
+          action,
+          input: toInputObject(args.input),
+        });
+
+        if (!result.ok) {
+          throw new Error(result.error);
+        }
+
+        return result;
       },
     },
   ],
