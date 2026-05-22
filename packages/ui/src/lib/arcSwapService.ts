@@ -1,4 +1,4 @@
-import { DEFAULT_SWAP_REQUEST, runArcTestnetSwap } from '@agora/arc-swap';
+import { ARC_SWAP_ACTION, DEFAULT_SWAP_REQUEST, executeArcSwapAgent } from '@agora/arc-swap';
 import type { SwapRequest } from '@agora/arc-swap';
 
 export interface SwapRequestInput {
@@ -28,7 +28,10 @@ export function coerceSwapRequest(input: SwapRequestInput | undefined): SwapRequ
 
 export async function executeArcSwap(input: SwapRequestInput | undefined): Promise<ArcSwapExecution> {
   const swapRequest = coerceSwapRequest(input);
-  const result = await runArcTestnetSwap({ swapRequest });
+  const result = await executeArcSwapAgent({
+    action: ARC_SWAP_ACTION,
+    input: swapRequest,
+  });
 
   return {
     swapRequest,
