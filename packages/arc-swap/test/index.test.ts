@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { relative } from 'node:path';
 import {
   ARC_SWAP_ACTION,
+  ARC_SWAP_AGENT_ID,
   executeArcSwapAgent,
   isDirectExecution,
   registerArcSwapAgent,
@@ -145,8 +146,8 @@ test('runArcTestnetSwap forwards swapRequest overrides', async () => {
 test('resolveArcSwapAgent returns the default registered agent', () => {
   const agent = resolveArcSwapAgent();
 
-  assert.equal(agent.metadata.id, 'arc-swap');
-  assert.equal(agent.metadata.supportedActions.includes('swap'), true);
+  assert.equal(agent.metadata.id, ARC_SWAP_AGENT_ID);
+  assert.equal(agent.metadata.supportedActions.includes(ARC_SWAP_ACTION), true);
 });
 
 test('registerArcSwapAgent stores custom agents in registry', async () => {
