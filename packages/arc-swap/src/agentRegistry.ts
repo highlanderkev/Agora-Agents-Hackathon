@@ -75,8 +75,12 @@ export async function executeArcSwapAgent({
   runOptions?: RunArcTestnetSwapOptions;
 } = {}): Promise<unknown> {
   const agent = resolveArcSwapAgent(agentId);
+  const request: ArcSwapAgentExecutionRequest = {
+    action,
+    ...(input ? { input } : {}),
+  };
 
-  return agent.execute({ action, input }, runOptions);
+  return agent.execute(request, runOptions);
 }
 
 registerArcSwapAgent(createDefaultArcSwapAgent());
