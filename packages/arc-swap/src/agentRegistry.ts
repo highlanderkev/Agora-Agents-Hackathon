@@ -8,11 +8,11 @@ export interface ArcSwapAgentMetadata {
   id: string;
   name: string;
   description: string;
-  supportedActions: readonly [typeof ARC_SWAP_ACTION];
+  supportedActions: readonly (typeof ARC_SWAP_ACTION)[];
 }
 
 export interface ArcSwapAgentExecutionRequest {
-  action: string;
+  action: typeof ARC_SWAP_ACTION;
   input?: SwapRequest;
 }
 
@@ -70,7 +70,7 @@ export async function executeArcSwapAgent({
   runOptions,
 }: {
   agentId?: string;
-  action?: string;
+  action?: typeof ARC_SWAP_ACTION;
   input?: SwapRequest;
   runOptions?: RunArcTestnetSwapOptions;
 } = {}): Promise<unknown> {
