@@ -2,7 +2,15 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
 import { relative } from 'node:path';
-import { isDirectExecution, runArcTestnetSwap } from '../src/index.js';
+import {
+  ARC_SWAP_ACTION,
+  ARC_SWAP_AGENT_ID,
+  executeArcSwapAgent,
+  isDirectExecution,
+  registerArcSwapAgent,
+  resolveArcSwapAgent,
+  runArcTestnetSwap,
+} from '../src/index.js';
 import type { ArcConfig, SwapRequest } from '../src/index.js';
 
 interface SwapArgs {
@@ -133,4 +141,50 @@ test('runArcTestnetSwap forwards swapRequest overrides', async () => {
   assert.equal(capturedSwapArgs?.tokenIn, 'USDT');
   assert.equal(capturedSwapArgs?.tokenOut, 'USDC');
   assert.equal(capturedSwapArgs?.amountIn, '2.50');
+});
+
+test('resolveArcSwapAgent returns the default registered agent', () => {
+  const agent = resolveArcSwapAgent();
+
+  assert.equal(agent.metadata.id, ARC_SWAP_AGENT_ID);
+  assert.equal(agent.metadata.supportedActions.includes(ARC_SWAP_ACTION), true);
+});
+
+test('registerArcSwapAgent stores custom agents in registry', async () => {
+  const customAgentId = `arc-swap-custom-${Date.now()}`;
+  registerArcSwapAgent({
+    metadata: {
+      id: customAgentId,
+      name: 'Custom Arc Swap',
+      description: 'Custom test agent',
+      supportedActions: [ARC_SWAP_ACTION],
+    },
+    execute: async () => ({ ok: true }),
+  });
+
+  const agent = resolveArcSwapAgent(customAgentId);
+
+  assert.equal(agent.metadata.id, customAgentId);
+  assert.deepEqual(await agent.execute({ action: ARC_SWAP_ACTION }), { ok: true });
+});
+
+test('executeArcSwapAgent runs swap through the registered arc-swap agent', async () => {
+  const result = await executeArcSwapAgent({
+    action: ARC_SWAP_ACTION,
+    input: {
+      tokenIn: 'USDC',
+      tokenOut: 'EURC',
+      amountIn: '0.50',
+    },
+    runOptions: {
+      getConfig: () => createConfig('0x1234'),
+      appKitFactory: () => ({
+        swap: async () => ({ requestId: 'req_registry' }),
+      }),
+      createAdapter: () => ({}),
+      toAccount: () => ({ address: '0xabc' }),
+    },
+  });
+
+  assert.deepEqual(result, { requestId: 'req_registry' });
 });

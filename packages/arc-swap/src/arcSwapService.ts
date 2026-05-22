@@ -29,7 +29,7 @@ interface SwapKit {
 
 type AppKitConstructor = new (...args: unknown[]) => SwapKit;
 
-interface RunArcTestnetSwapOptions {
+export interface RunArcTestnetSwapOptions {
   getConfig?: () => ArcConfig;
   appKitFactory?: () => SwapKit;
   createAdapter?: (input: { privateKey: string }) => unknown;
